@@ -18,7 +18,7 @@ copyright="/*
 
 function errorMsg(){
   echo "- Incorrect file name :" "$fileName"
-  echo "- Please use only letters. First letter must be CamelCase!"
+  echo "- Please use only letters. First letter must be Capitalize!"
   echo "- Example of a correct file name: MyCustomWidget"
   echo "- Please fix it and try again."
 }
@@ -52,7 +52,7 @@ function errorMsg(){
 
  function importWidget() {
   $(sed -i '' '/widgets\/CustomWidgets.*/a\
-  import '$1' from "CustomJSFolder/'$1'";
+  import "CustomJSFolder/'$1'";
         ' main.js)
  }
 
