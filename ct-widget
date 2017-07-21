@@ -94,4 +94,7 @@ if [[ $1 =~ ^[A-Z][a-zA-Z]*$ ]] ; then
   else
     errorMsg $fileName
   fi
+  else
+    echo "- You must specify a Name to create a widget."
+    echo "- Ex: ct-widget MyWidget"
 fi
