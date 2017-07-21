@@ -23,12 +23,12 @@ function errorMsg(){
   echo "- Please fix it and try again."
 }
 
-  function createClass(){
+  function createClassMethod(){
     $(sed -i '' '15i\
       import m from "Marfeel";\
       \
         export default class '$1' {\
-          \  constructor()\
+          \  constructor(){}\
         }\
         \
         m.definePlugin("'$3'", function () {\
@@ -44,9 +44,15 @@ function errorMsg(){
         ' main.js)
  }
 
- function importWidget() {
+ function importCustomWidgets() {
   $(sed -i '' '/metrics\/Metrics.*/a\
   import CustomWidgets from "marfeel/touch/widgets/CustomWidgets";
+        ' main.js)
+ }
+
+ function importWidget() {
+  $(sed -i '' '/widgets\/CustomWidgets.*/a\
+  import '$1' from "CustomJSFolder/'$1'";
         ' main.js)
  }
 
@@ -69,17 +75,19 @@ if [[ $1 =~ ^[A-Z][a-zA-Z]*$ ]] ; then
         fi
       echo "- Creating file:" "$file"
       echo "$copyright" > $file
-      createClass $fileName $file $widgetName
+      createClassMethod $fileName $file $widgetName
       echo "- Widget name:" $widgetName
-      import=$(grep "widgets/CustomWidgets" main.js | wc -l)
-      if [ "$import" -eq 1 ] ; then
+      isCustomWidgetsImported=$(grep "widgets/CustomWidgets" main.js | wc -l)
+      if [ "$isCustomWidgetsImported" -eq 1 ] ; then
         echo "- Import found."
-        echo "- Registering widget with name:" $widgetName
+        echo "- Registering and importing widget with name:" $widgetName
+        importWidget $fileName
         registerWidget $widgetName
       else
         echo "- Missing import! Importing CustomWidgets..."
-        importWidget
-        echo "- Registering widget with name:" $widgetName
+        importCustomWidgets
+        echo "- Registering and importing widget with name:" $widgetName
+        importWidget $fileName
         registerWidget $widgetName
       fi
     fi
